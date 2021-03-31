@@ -1,0 +1,5 @@
+export const DELETE_RECORD = "DELETE_RECORD";
+export const DELETE_MULTIPLE = "DELETE_MULTIPLE";
+export const FETCH_RECORDS = "FETCH_RECORDS";  
+
+export const SET_FILTER = "SET_FILTER";
