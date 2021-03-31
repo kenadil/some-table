@@ -4,7 +4,7 @@ import Column from "antd/lib/table/Column";
 import { useDispatch, useSelector } from "react-redux";
 import { getRecords } from "../../Utils/dispatched";
 import { sortID, sortUsername } from "../../Utils/sorters";
-
+import { Link } from "react-router-dom";
 export type RecordType = {
   id: number;
   username: string;
@@ -60,7 +60,7 @@ const SomeTable = () => {
           rowSelection={rowSelection}
         >
           <Column title={<b>ID</b>} dataIndex="id" key="key" sorter={sortID} />
-          <Column render={(record: any) => <a>Подробнее..</a>} />
+          <Column render={(record: RecordType) => <Link to={`/users/${record.id}`}><p>Подробнее..</p></Link> }/>
           <Column
             title={<b>Username</b>}
             dataIndex="username"
