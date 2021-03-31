@@ -11,7 +11,7 @@ const recordReducer = (state: RecordType[] = [], action: any) => {
       return state.filter((record: RecordType) => record.id !== action.id);
     case DELETE_MULTIPLE:
       return state.filter(
-        (record: RecordType) => action.ids.indexOf(record) !== -1
+        (record: RecordType) => action.ids.indexOf(record.id) === -1
       );
     case FETCH_RECORDS:
       return action.records;

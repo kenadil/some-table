@@ -5,11 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { getRecords } from "../../Utils/dispatched";
 import { sortID, sortUsername } from "../../Utils/sorters";
 import { Link } from "react-router-dom";
+import { deleteSelected } from "../../Store/Actions";
 export type RecordType = {
   id: number;
   username: string;
   email: string;
   website: string;
+  key: number;
 };
 
 export type StateType = {
@@ -24,25 +26,33 @@ const SomeTable = () => {
   }));
   const dispatch = useDispatch();
 
-  const [state, setState] = useState({
-    loading: true,
-    selectedRowKeys: [1],
+  const records = getRecords(recordState, filterState, dispatch);
+  records.map((e: any, index: number) => {
+    e.key = index;
   });
 
-
-  const records = getRecords(recordState, filterState, dispatch);
-  records.map((e: any) => {e.key=e.id})
+  const [state, setState] = useState({
+    loading: true,
+    selectedRowKeys: [0],
+  });
 
   useEffect(() => {
     setState((prevState) => ({ ...prevState, loading: false }));
   }, []);
+
+  const handleMultipleDeletion = () => {
+    const ids = records.filter(e => state.selectedRowKeys.includes(e.key)).map(e => e.id);
+    dispatch(deleteSelected(ids));
+    setState((prevState) => ({...prevState, selectedRowKeys: [0]}));
+  };
 
   const rowSelection = {
     selectedRowKeys: state.selectedRowKeys,
     onChange: (selectedRowKeys: any) => {
       setState((prevState) => ({
         ...prevState,
-        selectedRowKeys: selectedRowKeys.length === 0 ? [1] : selectedRowKeys,
+        selectedRowKeys:
+          selectedRowKeys.length === 0 ? [records[0].key] : selectedRowKeys,
       }));
     },
   };
@@ -60,8 +70,15 @@ const SomeTable = () => {
           rowSelection={rowSelection}
         >
           <Column title={<b>ID</b>} dataIndex="id" key="key" sorter={sortID} />
-          <Column render={(record: RecordType) => <Link to={`/users/${record.id}`}><p>Подробнее..</p></Link> }/>
           <Column
+            render={(record: RecordType) => (
+              <Link to={`/users/${record.id}`}>
+                <p>Подробнее..</p>
+              </Link>
+            )}
+          />
+          <Column
+            width="20%"
             title={<b>Username</b>}
             dataIndex="username"
             sorter={sortUsername}
@@ -69,6 +86,12 @@ const SomeTable = () => {
           <Column title={<b>Email</b>} dataIndex="email" />
           <Column title={<b>Website</b>} dataIndex="website" />
           <Column
+            width="12%"
+            title={
+              <Button type="primary" onClick={handleMultipleDeletion}>
+                Delete ({state.selectedRowKeys.length})
+              </Button>
+            }
             render={(record: any) => (
               <Button type="default" onClick={record.onDelete}>
                 Delete
