@@ -40,8 +40,10 @@ Make a change in your file and push them, so others could use it.
 ```sh
 + thnx ^^
 ```
-<h2>Checkout my other sources</h2>
+<h2>Other projects</h2>
 <img align='right' src="https://thumbs.gfycat.com/ShadyFlickeringGonolek-max-1mb.gif" height="225" alt="le le let me die">
+<p><em>Check them up by clicking on link below
+</em></p>
 
 ### Links: 
 [![Linkedin](https://static.wikia.nocookie.net/dota2_gamepedia/images/7/7c/Shadowraze_%28Near%29_icon.png/revision/latest?cb=20160424232600&logo=Linkedin&width=30&logoColor=white&link=https://www.linkedin.com/in/adil-kenzhebulatov-bb04a31b0/)](https://www.linkedin.com/in/adil-kenzhebulatov-bb04a31b0/)
