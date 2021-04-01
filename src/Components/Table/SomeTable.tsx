@@ -57,9 +57,10 @@ const SomeTable = () => {
     else {
       alert("Table can't be empty!");
     }
+    console.log(filteredRows);
     setState((prevState) => ({
       ...prevState,
-      selectedRowKeys: filteredRows.length === 0 ? [records[0]?.id] : filteredRows,
+      selectedRowKeys: filteredRows.length === 0 ? [-1] : filteredRows,
     }));
   }
 
