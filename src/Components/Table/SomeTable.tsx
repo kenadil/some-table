@@ -24,26 +24,56 @@ const SomeTable = () => {
     recordState: state.recordState,
     filterState: state.filterState,
   }));
+  const userData = useSelector((state: StateType) => state.recordState);
   const dispatch = useDispatch();
 
   const records = getRecords(recordState, filterState, dispatch);
-  records.map((e: any, index: number) => {
-    e.key = index;
-  });
+  records.map((e: any) => 
+    e.key = e.id
+  );
 
   const [state, setState] = useState({
     loading: true,
-    selectedRowKeys: [0],
+    selectedRowKeys: [-1],
   });
 
   useEffect(() => {
-    setState((prevState) => ({ ...prevState, loading: false }));
-  }, []);
+    let selectedKeys: number[] = state.selectedRowKeys;
+    if (state.selectedRowKeys[0] === -1) {
+      selectedKeys = userData[0]?.id ? [userData[0]?.id] : state.selectedRowKeys;
+    }
+    setState((prevState) => ({
+      ...prevState,
+      loading: false,
+      selectedRowKeys: selectedKeys,
+    }));
+  }, [userData]);
+
+  const handleDeletion = (record: any) => {
+    const filteredRows = state.selectedRowKeys.filter(e => e !== record.id);
+    if (records.length > 1) {
+      record.onDelete();
+    }
+    else {
+      alert("Table can't be empty!");
+    }
+    setState((prevState) => ({
+      ...prevState,
+      selectedRowKeys: filteredRows.length === 0 ? [records[0]?.id] : filteredRows,
+    }));
+  }
 
   const handleMultipleDeletion = () => {
-    const ids = records.filter(e => state.selectedRowKeys.includes(e.key)).map(e => e.id);
-    dispatch(deleteSelected(ids));
-    setState((prevState) => ({...prevState, selectedRowKeys: [0]}));
+    const ids = records
+      .filter((e) => state.selectedRowKeys.includes(e.key))
+      .map((e) => e.id);
+    if (records.filter(e => ids.indexOf(e.id) === -1).length > 0) { 
+      dispatch(deleteSelected(ids));
+      setState((prevState) => ({...prevState, selectedRowKeys: [-1]})); // if all records that have been selected are deleted, select the first one that remains
+    }
+    else {
+      alert("Table can't be empty!");
+    }
   };
 
   const rowSelection = {
@@ -52,7 +82,7 @@ const SomeTable = () => {
       setState((prevState) => ({
         ...prevState,
         selectedRowKeys:
-          selectedRowKeys.length === 0 ? [records[0].key] : selectedRowKeys,
+          selectedRowKeys[0] === -1 ? [records[0]?.id] : selectedRowKeys,
       }));
     },
   };
@@ -93,7 +123,7 @@ const SomeTable = () => {
               </Button>
             }
             render={(record: any) => (
-              <Button type="default" onClick={record.onDelete}>
+              <Button type="default" onClick={() => handleDeletion(record)}>
                 Delete
               </Button>
             )}
